@@ -48,7 +48,6 @@ jobs:
           name: python-app
           path: |
             release.zip
-            !venv/
 
   deploy:
     runs-on: ubuntu-latest
@@ -80,5 +79,6 @@ jobs:
           app-name: "sdk-bindings-example"
           slot-name: "Production"
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          scm-do-build-during-deployment: true
-          enable-oryx-build: true
+          scm-do-build-during-deployment: false
+          enable-oryx-build: false
+          respect-funcignore: true
