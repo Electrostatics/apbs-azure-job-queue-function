@@ -6,14 +6,16 @@ app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.blob_trigger(
     arg_name="blob",
-    path="inputs/{date}/{job}/{name}",
+    path="inputs/{date}/{job}/{jobtype}-job.json",
     connection="BlobStorageConnectionString",
     Source="EventGrid",
 )
 @app.blob_output(arg_name="outputBlob", path="outputs/{date}/{job}/{name}", connection="BlobStorageConnectionString",)
 @app.blob_output(arg_name="inFile", path="outputs/{date}/{job}/{job}.in", connection="BlobStorageConnectionString")
-def BlobTrigger(blob: func.InputStream, outputBlob: func.Out[str], inFile: func.Out[str]):
+@app.blob_output(arg_name="metrics", path="outputs/{date}/{job}/{jobtype}-metrics.json", connection="BlobStorageConnectionString")
+def BlobTrigger(blob: func.InputStream, outputBlob: func.Out[str], inFile: func.Out[str], metrics: func.Out[str]):
     logging.info("BlobTrigger function processed blob\n")
     logging.info(f"{blob.name}\n")
     outputBlob.set(blob.read().decode("utf-8"))
     inFile.set("TESTING this")
+    metrics.set("Metrics")
