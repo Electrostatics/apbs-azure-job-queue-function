@@ -16,14 +16,3 @@ def BlobTrigger(blob: func.InputStream, outputBlob: func.Out[str], inFile: func.
     logging.info(f"{blob.name}\n")
     inFile.set("TESTING this")
     metrics.set("Metrics")
-
-
-@app.blob_trigger(
-    arg_name="pdb",
-    path="inputs/{date}/{job}/{pdb}.pdb",
-    connection="BlobStorageConnectionString",
-)
-@app.blob_output(arg_name="outputBlob", path="outputs/{date}/{job}/{pdb}.pdb", connection="BlobStorageConnectionString")
-def PDBTrigger(pdb: func.InputStream, outputBlob: func.Out[str]):
-    logging.info(f"{pdb.name}\n")
-    outputBlob.set(pdb.read().decode("utf-8"))
