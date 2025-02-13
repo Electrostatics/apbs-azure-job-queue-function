@@ -49,7 +49,7 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4674FE39923C46F2B28889E631EEBC66 }}
 
       - name: Deploy
-        run: func azure functionapp publish sdk-bindings-example --build-remote
+        run: func azure functionapp publish sdk-bindings-example --build-remote --python
 
   # deploy:
   #   runs-on: ubuntu-latest
