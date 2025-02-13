@@ -5,7 +5,9 @@ import json
 from time import time
 
 from launcher.azure_storage_utils import AzureUtils, connection_string
+from launcher.jobsetup import MissingFilesError
 from launcher.pdb2pqr import PDB2PQRRunner
+from launcher.apbs import APBSRunner
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
@@ -130,6 +132,13 @@ def BlobTrigger(client: func.InputStream, msg: func.Out[str]):
         job_command_line_args = job_runner.prepare_job()
     elif type == "apbs":
         logging.info("Running APBS job")
+        job_runner = APBSRunner(form, job_id, date)
+        try:
+            job_command_line_args = job_runner.prepare_job("outputs", "inputs")
+        except MissingFilesError as err:
+            logging.error(f"{tag} Error preparing APBS job: {err}")
+            status = "failed"
+            message = f"Files specified byut not found: {err.missing_files}"
     else:
         status = "invalid"
         message = "Invalid job type"
