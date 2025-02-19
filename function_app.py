@@ -1,8 +1,11 @@
 import azure.functions as func
 from azure.storage.blob import BlobServiceClient
+from azure.identity import ManagedIdentityCredential
+from azure.mgmt.appcontainers import ContainerAppsAPIClient
 import logging
 import json
 from time import time
+import os
 
 from launcher.azure_storage_utils import AzureUtils, connection_string
 from launcher.jobsetup import MissingFilesError
@@ -85,6 +88,35 @@ def build_status_dict(
 
     logging.info(f"{job_tag} Initial Status: {initial_status_dict}")
     return initial_status_dict
+
+
+def start_container_job():
+    client_id = os.getenv("CONTAINER_APP_CLIENT_ID")
+    if client_id is None:
+        logging.error("No client ID found for Managed Identity")
+        return
+    credential = ManagedIdentityCredential(client_id=client_id)
+    subscription_id = os.getenv("SUBSCRIPTION_ID")
+    if subscription_id is None:
+        logging.error("No subscription ID found for Managed Identity")
+        return
+    client = ContainerAppsAPIClient(credential, subscription_id)
+
+    resource_group_name = os.getenv("RESOURCE_GROUP_NAME")
+    if resource_group_name is None:
+        logging.error("No resource group name found for Managed Identity")
+        return
+    job_name = os.getenv("JOB_NAME")
+    if job_name is None:
+        logging.error("No job name found for Managed Identity")
+        return
+    try:
+        poller = client.jobs.begin_start(
+            resource_group_name=resource_group_name, job_name=job_name
+        )
+    except Exception as err:
+        logging.error(f"Error starting container job: {err}")
+        return
 
 
 @app.blob_trigger(
@@ -174,3 +206,4 @@ def BlobTrigger(client: func.InputStream, msg: func.Out[str]):
         }
         logging.info(f"Queue Message: {queue_message}")
         msg.set(json.dumps(queue_message))
+        start_container_job()
