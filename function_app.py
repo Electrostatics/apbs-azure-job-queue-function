@@ -208,5 +208,5 @@ def BlobTrigger(client: func.InputStream, msg: func.Out[str]):
         msg.set(json.dumps(queue_message))
         logging.info("Message sent to queue")
         logging.info("Starting container job")
-        # start_container_job()
+        start_container_job()
         logging.info("Container job started")
