@@ -1,7 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure Functions: https://aka.ms/python-webapps-actions
-
 name: Build and deploy Python project to Azure Function App - sdk-bindings-example
 
 on:
@@ -12,7 +8,7 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: "." # set this to the path to your web app project, defaults to the repository root
-  PYTHON_VERSION: "3.11" # set this to the python version to use (supports 3.6, 3.7, 3.8)
+  PYTHON_VERSION: "3.11" # set this to the python version to use
 
 jobs:
   build:
@@ -50,36 +46,3 @@ jobs:
 
       - name: Deploy
         run: func azure functionapp publish sdk-bindings-example --build-remote --python
-
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   permissions:
-  #     id-token: write #This is required for requesting the JWT
-  #     contents: read #This is required for actions/checkout
-
-  #   steps:
-  #     - name: Download artifact from build job
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: python-app
-
-  #     - name: Unzip artifact for deployment
-  #       run: unzip release.zip
-
-  #     - name: Login to Azure
-  #       uses: azure/login@v2
-  #       with:
-  #         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D6A1AC4DA4414DD8A2D6F8B7EBF95881 }}
-  #         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1C07ACD535694296B90F2E80B2FE9DCA }}
-  #         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4674FE39923C46F2B28889E631EEBC66 }}
-
-  #     - name: "Deploy to Azure Functions"
-  #       uses: Azure/functions-action@v1
-  #       id: deploy-to-function
-  #       with:
-  #         app-name: "sdk-bindings-example"
-  #         slot-name: "Production"
-  #         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-  #         scm-do-build-during-deployment: true
-  #         enable-oryx-build: true
