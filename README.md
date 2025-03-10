@@ -1,4 +1,4 @@
-# Azure Function App for APBS/PDB2PQR Processing
+# apbs-azure-job-queue-function
 
 This repository contains an Azure Function App that serves as a launcher for APBS (Adaptive Poisson-Boltzmann Solver) and PDB2PQR jobs. The function app processes user requests to run molecular electrostatics calculations in the cloud using Azure Container Apps.
 
