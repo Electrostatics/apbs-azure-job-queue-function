@@ -12,6 +12,7 @@ The system processes molecular structure files (PDB files) through either PDB2PQ
 - **Azure Blob Storage**: Stores input and output files
 - **Azure Queue Storage**: Manages job execution queue
 - **Azure Container Apps**: Executes the actual APBS/PDB2PQR calculations
+- **Azure Event Grid**: The low-latency event trigger platform
 
 ## Workflow
 
