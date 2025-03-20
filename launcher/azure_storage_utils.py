@@ -8,15 +8,8 @@ connection_string = os.environ["BlobStorageConnectionString"]
 class AzureUtils:
     @staticmethod
     def copy_object(container_name: str, src: str, dest: str):
-        storage_client = BlobServiceClient.from_connection_string(connection_string)
-        # Download the src info
-        src_blob_client = storage_client.get_blob_client(container_name, src)
-        src_info = src_blob_client.download_blob().readall().decode("utf-8")
-
-        # Upload the src info to the dest
-        dest_blob_client = storage_client.get_blob_client(container_name, dest)
-        out = dest_blob_client.upload_blob(src_info, overwrite=True)
-        logging.info(f"Output: {out}")
+        src_data = AzureUtils.download_file_str(container_name, src)
+        AzureUtils.put_object(container_name, dest, src_data)
 
     @staticmethod
     def download_file_str(bucket_name: str, object_name: str) -> str:
