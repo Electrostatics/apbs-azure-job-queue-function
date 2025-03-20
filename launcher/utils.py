@@ -18,13 +18,11 @@ class AzureCopyObject:
         if self.dest_container is None:
             self.dest_container = self.source_container
 
-    def copy_object(self, tag: str):
+    def copy_object(self):
         return AzureUtils.copy_object(
-            source_container_name=self.source_container,
-            destination_container_name=self.dest_container,
-            source_object_name=self.source_object,
-            dest_object_name=self.dest_object,
-            job_tag=tag,
+            container_name=self.source_container,
+            src=self.source_object,
+            dest=self.dest_object,
         )
 
 

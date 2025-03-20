@@ -62,7 +62,7 @@ class PDB2PQRRunner(JobSetup):
                         payload.dest_object,
                         payload.source_container,
                     )
-                    payload.copy_object(self.job_tag)
+                    payload.copy_object()
 
         elif self.invoke_method in ["cli", "v2"]:
             command_line_args = self.version_2_job()
