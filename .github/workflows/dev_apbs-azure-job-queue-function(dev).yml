@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install function tools
+        run: sudo apt-get install azure-functions-core-tools-4 -y
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
