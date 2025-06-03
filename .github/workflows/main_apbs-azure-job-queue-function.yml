@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read #This is required for actions/checkout
+      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Checkout repository
@@ -37,34 +38,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Optional: Add step to run tests here
-
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: python-app
-          path: |
-            release.zip
-            !venv/
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: python-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
+      - name: Install function tools
+        run: sudo apt-get install azure-functions-core-tools-4 -y
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -73,11 +48,5 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6D3E766EF27C43439F7710E47532479F }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_23A841106A804CE68C9E94CC48F3F5B8 }}
 
-      - name: "Deploy to Azure Functions"
-        uses: Azure/functions-action@v1
-        id: deploy-to-function
-        with:
-          app-name: "apbs-azure-job-queue-function"
-          slot-name: "Production"
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          remote-build: true
+      - name: Deploy
+        run: func azure functionapp publish apbs-azure-job-queue-function --build-remote --python
