@@ -49,4 +49,4 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_760601F621C4455D9EC1B6AB7A6BB62C }}
 
       - name: Deploy
-        run: func azure functionapp publish sdk-bindings-example --build-remote --python
+        run: func azure functionapp publish apbs-azure-job-queue-function --build-remote --python
