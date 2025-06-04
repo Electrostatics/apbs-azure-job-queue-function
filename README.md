@@ -49,14 +49,26 @@ The system supports two primary job types:
 ## Configuration
 
 ### Environment Variables
+**NOTE: Be VERY intentional in setting these up since if these aren't set the function will not deploy**
 
 The function app requires these environment variables:
 
-- `BlobStorageConnectionString`: Connection string for Azure Blob Storage
+- `BlobStorageConnectionString`: Connection string for Azure Blob Storage.
+    - To find this, go to Security + Networking > Access keys. Be careful, this string has lots of power.
 - `CONTAINER_APP_CLIENT_ID`: Managed Identity client ID
+    - This maps to a role created to interact with the creating a contrainer app job
+    - This gets created by [apbs-deploy-azure](https://github.com/Electrostatics/apbs-deploy-azure) and is named `apbs-container-app-access`
 - `SUBSCRIPTION_ID`: Azure subscription ID
 - `RESOURCE_GROUP_NAME`: Resource group containing Container Apps
+    - This gets created by [apbs-deploy-azure](https://github.com/Electrostatics/apbs-deploy-azure) and is named `apbs-backend`
 - `JOB_NAME`: Container App Job name
+    - This gets created by [apbs-deploy-azure](https://github.com/Electrostatics/apbs-deploy-azure) and is named `apbs-app`
+- `OutputQueue__credential`: This should be set to `managedIdentity`
+- `OutputQueue__clientId`: The client ID for the managed identity used to access the output queue
+    - This gets created by [apbs-deploy-azure](https://github.com/Electrostatics/apbs-deploy-azure) and is named `apbs-backend-data-access`
+    - Find this in Managed Identites > `apbs-backend-data-access` > Client ID
+- `OutputQueue__serviceUri`: The URI of the queue
+    - Find this in your storage account Data Storage > Queues > Url
 
 ## Deployment
 
@@ -64,6 +76,9 @@ The repository includes GitHub Actions workflows for CI/CD:
 
 - Push to `dev` branch deploys to the dev slot
 - Push to `main` branch deploys to production
+
+If you are setting this workflow up yourself, you will need to create two deployment slots and set the above environment variables in your slot also.
+This ensures that your dev slot also has the correct access to the variables.
 
 ## Dependencies
 
