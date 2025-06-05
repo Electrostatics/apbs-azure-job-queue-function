@@ -91,16 +91,19 @@ def build_status_dict(
 
 
 def start_container_job():
+    logging.info("In start container job")
     client_id = os.getenv("CONTAINER_APP_CLIENT_ID")
     if client_id is None:
         logging.error("No client ID found for Managed Identity")
         return
     credential = ManagedIdentityCredential(client_id=client_id)
+    logging.info("Successful auth")
     subscription_id = os.getenv("SUBSCRIPTION_ID")
     if subscription_id is None:
         logging.error("No subscription ID found for Managed Identity")
         return
     client = ContainerAppsAPIClient(credential, subscription_id)
+    logging.info("Client created")
 
     resource_group_name = os.getenv("RESOURCE_GROUP_NAME")
     if resource_group_name is None:
@@ -110,6 +113,7 @@ def start_container_job():
     if job_name is None:
         logging.error("No job name found for Managed Identity")
         return
+    logging.info("Starting poll")
     try:
         poller = client.jobs.begin_start(
             resource_group_name=resource_group_name, job_name=job_name
