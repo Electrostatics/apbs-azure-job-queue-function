@@ -27,8 +27,8 @@ The system processes molecular structure files (PDB files) through either PDB2PQ
 ## Project Structure
 
 - **/.github/workflows/**: CI/CD workflows for deployment to Azure
-  - **dev_sdk-bindings-example.yml**: Deployment workflow for dev branch
-  - **main_sdk-bindings-example.yml**: Deployment workflow for main branch
+  - **dev_apbs-azure-job-queue-function(dev).yml**: Deployment workflow for dev branch
+  - **main_apbs-azure-job-queue-function.yml**: Deployment workflow for main branch
 - **/launcher/**: Core business logic modules
   - **apbs.py**: APBS job setup
   - **azure_storage_utils.py**: Azure Blob Storage utilities
@@ -69,6 +69,12 @@ The function app requires these environment variables:
     - Find this in Managed Identites > `apbs-backend-data-access` > Client ID
 - `OutputQueue__serviceUri`: The URI of the queue
     - Find this in your storage account Data Storage > Queues > Url
+
+### Setup a deployment environment
+1) Create a function app.
+2) Setup your deployment from this repo. We use a modified version in the GitHub Actions seen above because we found it works better than what is provided by Azure.
+3) Setup your environment variables from above.
+4) For the roles mentioned above, ensure they are added to the function app via the UI.
 
 ## Deployment
 
