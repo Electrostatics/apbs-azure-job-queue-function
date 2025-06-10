@@ -96,14 +96,10 @@ def start_container_job():
     if client_id is None:
         logging.error("No client ID found for Managed Identity")
         return
-    credential = ManagedIdentityCredential(client_id=client_id)
-    logging.info("Successful auth")
     subscription_id = os.getenv("SUBSCRIPTION_ID")
     if subscription_id is None:
         logging.error("No subscription ID found for Managed Identity")
         return
-    client = ContainerAppsAPIClient(credential, subscription_id)
-    logging.info("Client created")
 
     resource_group_name = os.getenv("RESOURCE_GROUP_NAME")
     if resource_group_name is None:
@@ -115,11 +111,28 @@ def start_container_job():
         return
     logging.info("Starting poll")
     try:
+        credential = ManagedIdentityCredential(client_id=client_id)
+        logging.info("Successful credential call")
+
+        client = ContainerAppsAPIClient(credential, subscription_id)
+        logging.info("Client created")
+
+        logging.info("Checking job status")
+        job_info = client.jobs.get(
+            resource_group_name=resource_group_name, job_name=job_name
+        )
+        logging.info(f"Current info: {job_info}")
+
         poller = client.jobs.begin_start(
             resource_group_name=resource_group_name, job_name=job_name
         )
+        logging.info("Poller created")
+        logging.info(f"Poller status: {poller.status()}")
+        logging.info("Waiting for job start")
+        result = poller.result(timeout=150)
+        logging.info(f"Job start status: {result}")
     except Exception as err:
-        logging.error(f"Error starting container job: {err}")
+        logging.error(f"Error starting container job: {type(err).__name__}: {err}")
         return
 
 
