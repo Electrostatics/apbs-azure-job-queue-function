@@ -1,5 +1,4 @@
 import azure.functions as func
-from azure.storage.blob import BlobServiceClient
 from azure.identity import ManagedIdentityCredential
 from azure.mgmt.appcontainers import ContainerAppsAPIClient
 import logging
@@ -7,7 +6,7 @@ import json
 from time import time
 import os
 
-from launcher.azure_storage_utils import AzureUtils, connection_string
+from launcher.azure_storage_utils import AzureUtils
 from launcher.jobsetup import MissingFilesError
 from launcher.pdb2pqr import PDB2PQRRunner
 from launcher.apbs import APBSRunner
@@ -15,25 +14,12 @@ from launcher.apbs import APBSRunner
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 
-def get_azure_object_json(tag: str, container: str, object_name: str) -> dict:
-    resp = {}
-    storage_client = BlobServiceClient.from_connection_string(connection_string)
-    blob_client = storage_client.get_blob_client(container, object_name)
-    out = blob_client.download_blob().readall().decode("utf-8")
-    try:
-        resp = json.loads(out)
-        logging.info(f"{tag}: Found JSON object data: {resp}")
-    except Exception as err:
-        logging.error(f"{tag}: Error parsing JSON object data: {err}")
-    return resp
-
-
 def upload_status_file(filename: str, inital_status: dict):
     AzureUtils.put_object("outputs", filename, json.dumps(inital_status))
 
 
 def get_job_info(tag: str, container: str, object_name: str) -> dict:
-    return get_azure_object_json(tag, container, object_name)
+    return AzureUtils.get_azure_object_json(tag, container, object_name)
 
 
 def build_status_dict(
