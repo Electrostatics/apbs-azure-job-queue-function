@@ -19,7 +19,7 @@ msal-extensions==1.2.0
 portalocker==2.10.1
 pycparser==2.22
 pyjwt==2.10.1
-requests==2.32.3
+requests==2.32.4
 six==1.17.0
 typing-extensions==4.12.2
-urllib3==2.3.0
+urllib3==2.5.0
